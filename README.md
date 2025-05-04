@@ -5,6 +5,40 @@ The program runs on Python 3, and requires dependencies to be installed. Python 
 
 ## Usage
 
+### Python venv
+```
+cd CPAP-DATA*
+python -m venv myenv
+source myenv/bin/activate 
+pip install -r requirements.txt
+python ezshare_resmed.py --ssid ezshare --psk 88888888 --show_progress
+#deactivate 
+ ```
+
+ ### Docker Build 
+ - This is helpful to run manually (in a containerized environment)
+ - Mounts $HOME/ezshare_resmed_data folder into container and uses host network 
+ - This assumes that host is connected to ez-share SDCard and is available at 192.168.4.1 
+ ```
+ docker build -t ezshare-resmed . 
+ docker run --rm --network host -v $HOME/ezshare_resmed_data:/ezshare_resmed_data ezshare-resmed 
+ 
+ #To run manually/debug
+ docker run --rm -it --network host -v $HOME/ezshare_resmed_data:/ezshare_resmed_data ezshare-resmed /bin/bash
+ root@40a553229645:/app# python ezshare_resmed.py --url "http://192.168.4.1/dir?dir=A:" --path /ezshare_resmed_data --show_progress
+
+ ```
+
+ ### Docker compose Build/Run
+ - This builds the container (similar to Docker Build option) except that it automates the deployment further. 
+ - This sets up the container to start up and set itself a cron job to run the script daily at 12 PM noon
+ - Entrypoint Command starts cron daemon in the foreground (crond -f) ensuring that the container remains running to execute scheduled tasks
+ - This will connect to EZ SDcard at 192.168.4.1 everyday at 12 PM, fetch its contents into $HOME/ezshare_resmed_data
+ ```
+ docker-compose up --build 
+ ```
+ - To debug/enter shell on the container: `docker-compose exec ezshare_resmed /bin/bash`
+
 ### Options
 
 | Argument | Description |

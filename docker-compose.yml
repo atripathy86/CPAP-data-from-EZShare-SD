@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  ezshare_resmed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ezshare_resmed
+    #This sets up a cron job to run the script daily at 12 PM noon
+    #Command starts cron daemon in the foreground (crond -f) ensuring that the container remains running to execute scheduled tasks
+    #Uses timeout to terminate the script after 5 minutes (300 seconds)
+    command: ["sh", "-c", "echo '0 12 * * * timeout 300 python ezshare_resmed.py --url http://192.168.4.1/dir?dir=A: --path /ezshare_resmed_data --show_progress' | crontab - && crond -f"]
+    volumes:
+      - .:/app
+      - $HOME/ezshare_resmed_data:/ezshare_resmed_data
+    network_mode: host
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
