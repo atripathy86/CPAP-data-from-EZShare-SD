@@ -19,3 +19,7 @@ RUN apt-get update && apt-get install -y coreutils
 
 # Set the default command to run the script with the specified arguments
 #CMD ["python", "ezshare_resmed.py", "--ssid", "ezshare", "--psk", "88888888", "--show_progress"]
+
+RUN crontab -u root cron.txt
+
+CMD ["/usr/sbin/cron", "-f"]

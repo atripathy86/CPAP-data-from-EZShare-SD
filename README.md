@@ -35,9 +35,11 @@ python ezshare_resmed.py --ssid ezshare --psk 88888888 --show_progress
  - Entrypoint Command starts cron daemon in the foreground (crond -f) ensuring that the container remains running to execute scheduled tasks
  - This will connect to EZ SDcard at 192.168.4.1 everyday at 12 PM, fetch its contents into $HOME/ezshare_resmed_data
  ```
- docker-compose up --build 
+ docker-compose up -d --build
+ docker-compose logs -f  
  ```
  - To debug/enter shell on the container: `docker-compose exec ezshare_resmed /bin/bash`
+ - Container Log will only be populated at 12 PM everyday. This can be changed by editing cron.txt
 
 ### Options
 
